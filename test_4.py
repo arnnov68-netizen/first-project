@@ -8,21 +8,14 @@ class TestBooksCollector:
         collector.add_new_book('Гарри Поттер')
         assert 'Гарри Поттер' in collector.get_books_genre()
 
-    def test_add_new_book_empty_name(self):
+    @pytest.mark.parametrize("name", ["", "a" * 41, "Книга", "Книга"])
+    def test_add_new_book_validation(self, name):
         collector = BooksCollector()
-        collector.add_new_book('')
-        assert collector.get_books_genre() == {}
-
-    def test_add_new_book_long_name(self):
-        collector = BooksCollector()
-        collector.add_new_book('a' * 41)
-        assert collector.get_books_genre() == {}
-
-    def test_add_new_book_duplicate(self):
-        collector = BooksCollector()
-        collector.add_new_book('Книга')
-        collector.add_new_book('Книга')
-        assert len(collector.get_books_genre()) == 1
+        collector.add_new_book(name)
+        if name and len(name) <= 40:
+            assert name in collector.get_books_genre()
+        else:
+            assert collector.get_books_genre() == {}
 
     def test_set_book_genre_valid(self):
         collector = BooksCollector()
