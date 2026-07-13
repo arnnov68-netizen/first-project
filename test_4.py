@@ -1,5 +1,4 @@
 import pytest
-from books_collector import BooksCollector
 class TestBooksCollector:
 
     def test_add_new_book_adds_book(self, books_collector):
@@ -7,18 +6,16 @@ class TestBooksCollector:
         assert 'Гарри Поттер' in books_collector.get_books_genre()
 
     @pytest.mark.parametrize("genre", ['Фантастика', 'Ужасы', 'Детективы', 'Мультфильмы', 'Комедии'])
-    def test_set_book_genre_valid_genres(self, genre):
-        collector = BooksCollector()
-        collector.add_new_book('Книга')
-        collector.set_book_genre('Книга', genre)
-        assert collector.get_book_genre('Книга') == genre
+    def test_set_book_genre_valid_genres(self, books_collector, genre):
+        books_collector.add_new_book('Книга')
+        books_collector.set_book_genre('Книга', genre)
+        assert books_collector.get_book_genre('Книга') == genre
 
-    def test_set_book_genre_overwrites_existing_genre(self):
-        collector = BooksCollector()
-        collector.add_new_book('Книга')
-        collector.set_book_genre('Книга', 'Фантастика')
-        collector.set_book_genre('Книга', 'Ужасы')
-        assert collector.get_book_genre('Книга') == 'Ужасы'
+    def test_set_book_genre_overwrites_existing_genre(self, books_collector):
+        books_collector.add_new_book('Книга')
+        books_collector.set_book_genre('Книга', 'Фантастика')
+        books_collector.set_book_genre('Книга', 'Ужасы')
+        assert books_collector.get_book_genre('Книга') == 'Ужасы'
 
     def test_set_book_genre_valid(self, books_collector):
         books_collector.add_new_book('Книга')
@@ -32,9 +29,6 @@ class TestBooksCollector:
 
     def test_set_book_genre_nonexistent_book(self, books_collector):
         books_collector.set_book_genre('Нет', 'Фантастика')
-        assert books_collector.get_book_genre('Нет') is None
-
-    def test_get_book_genre_nonexistent(self, books_collector):
         assert books_collector.get_book_genre('Нет') is None
 
     def test_get_books_with_specific_genre(self, books_collector):
@@ -86,3 +80,5 @@ class TestBooksCollector:
     def test_delete_book_from_favorites(self, books_collector):
         books_collector.add_new_book('Книга')
         books_collector.add_book_in_favorites('Книга')
+        books_collector.delete_book_from_favorites('Книга')
+        assert books_collector.get_list_of_favorites_books() == []
